@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Эдельвейс — Мы из лома</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: sans-serif; background: #f4f4f2; }
+.hero-wrap { position: relative; overflow: hidden; min-height: 520px; display: flex; align-items: center; justify-content: center; }
+canvas#bg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.hero-overlay { position: absolute; inset: 0; background: linear-gradient(160deg, rgba(0,30,10,0.75) 0%, rgba(10,10,10,0.85) 60%, rgba(0,20,8,0.72) 100%); }
+.hero-content { position: relative; z-index: 2; text-align: center; padding: 60px 24px 48px; width: 100%; }
+.hero-tag { font-size: 11px; letter-spacing: 4px; color: rgba(180,220,160,0.7); text-transform: uppercase; margin-bottom: 18px; }
+.hero-logo { font-size: 52px; font-weight: 700; color: #fff; letter-spacing: 2px; margin-bottom: 6px; }
+.hero-logo span { color: #c9a84c; }
+.hero-slogan { font-size: 13px; color: rgba(201,168,76,0.85); letter-spacing: 2px; margin-bottom: 14px; }
+.hero-desc { font-size: 15px; color: rgba(255,255,255,0.7); max-width: 400px; margin: 0 auto 32px; line-height: 1.7; }
+.hero-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 40px; }
+.btn-gold { background: #c9a84c; color: #111; border: none; padding: 13px 32px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; }
+.btn-outline { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.25); padding: 13px 32px; border-radius: 8px; font-size: 14px; cursor: pointer; }
+.hero-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: rgba(255,255,255,0.06); border-radius: 12px; overflow: hidden; max-width: 480px; margin: 0 auto; }
+.stat { padding: 18px 12px; background: rgba(0,0,0,0.3); text-align: center; }
+.stat-val { font-size: 18px; font-weight: 600; color: #c9a84c; }
+.stat-label { font-size: 11px; color: rgba(255,255,255,0.45); margin-top: 3px; }
+.container { max-width: 860px; margin: 0 auto; padding: 16px; }
+.section { background: #fff; border: 0.5px solid #e0ddd5; border-radius: 16px; padding: 28px 24px; margin-bottom: 16px; }
+.section-head { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+.section-dot { width: 8px; height: 8px; border-radius: 50%; background: #c9a84c; }
+.section-title { font-size: 17px; font-weight: 500; color: #111; }
+.price-cat { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: #999; padding: 8px 0 6px; border-bottom: 0.5px solid #eee; margin: 16px 0 4px; }
+.price-cat:first-child { margin-top: 0; }
+.price-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 0.5px solid #f0ede5; }
+.price-row:last-child { border-bottom: none; }
+.price-name { font-size: 14px; color: #111; }
+.price-sub { font-size: 11px; color: #aaa; margin-top: 2px; }
+.price-val { font-size: 14px; font-weight: 500; color: #c9a84c; }
+.steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 16px; }
+.step { text-align: center; }
+.step-num { width: 36px; height: 36px; border-radius: 50%; background: #111; color: #c9a84c; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; margin: 0 auto 10px; }
+.step-title { font-size: 13px; font-weight: 500; color: #111; margin-bottom: 4px; }
+.step-desc { font-size: 12px; color: #888; line-height: 1.5; }
+.why-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+.why-card { background: #f7f5f0; border-radius: 8px; padding: 16px; }
+.why-icon { font-size: 20px; margin-bottom: 8px; }
+.why-title { font-size: 13px; font-weight: 500; color: #111; margin-bottom: 4px; }
+.why-desc { font-size: 12px; color: #777; line-height: 1.5; }
+.review-form { background: #f7f5f0; border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+.review-form-title { font-size: 14px; font-weight: 500; color: #111; margin-bottom: 14px; }
+.stars-row { display: flex; gap: 6px; margin-bottom: 12px; }
+.star { font-size: 28px; cursor: pointer; color: #ddd; user-select: none; }
+.star.active { color: #c9a84c; }
+input, select, textarea { width: 100%; padding: 10px 12px; border: 0.5px solid #ddd; border-radius: 8px; font-size: 14px; font-family: sans-serif; background: #fff; }
+textarea { height: 80px; resize: none; }
+.field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+.field label { font-size: 12px; color: #777; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+.btn-dark { width: 100%; background: #111; color: #fff; border: none; padding: 13px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; margin-top: 4px; }
+.reviews-list { display: flex; flex-direction: column; gap: 12px; }
+.review-card { background: #fff; border: 0.5px solid #e8e5de; border-radius: 12px; padding: 16px; }
+.review-header { display: flex; justify-content: space-between; margin-bottom: 6px; }
+.review-name-text { font-size: 14px; font-weight: 500; color: #111; }
+.review-stars { color: #c9a84c; font-size: 14px; }
+.review-date { font-size: 11px; color: #aaa; margin-bottom: 6px; }
+.review-body { font-size: 13px; color: #555; line-height: 1.6; }
+.no-reviews { font-size: 13px; color: #aaa; text-align: center; padding: 20px 0; }
+.eco { background: #0d2010; border-radius: 16px; padding: 40px 24px; margin-bottom: 16px; text-align: center; }
+.eco-title { font-size: 22px; font-weight: 500; color: #fff; margin-bottom: 12px; }
+.eco-title span { color: #c9a84c; }
+.eco-text { font-size: 14px; color: rgba(255,255,255,0.55); line-height: 1.8; max-width: 460px; margin: 0 auto; }
+.contacts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; }
+.contact-item { display: flex; flex-direction: column; gap: 4px; }
+.contact-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #aaa; }
+.contact-val { font-size: 14px; font-weight: 500; color: #111; line-height: 1.6; }
+.contact-val a { color: #c9a84c; text-decoration: none; }
+.footer { text-align: center; padding: 24px; font-size: 12px; color: #aaa; }
+@media(max-width:480px){ .hero-logo{font-size:32px;} .form-grid{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+
+<div class="hero-wrap" id="hero">
+  <canvas id="bg"></canvas>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <p class="hero-tag">Приём металлолома</p>
+    <h1 class="hero-logo">ЭДЕЛЬВЕЙС<span>.</span></h1>
+    <p class="hero-slogan">Мы из лома — и мы делаем мир чище 💚</p>
+    <p class="hero-desc">Принимаем чёрный и цветной металл. Честные весы, расчёт на месте, бесплатный вывоз.</p>
+    <div class="hero-btns">
+      <button class="btn-gold" onclick="document.getElementById('zayavka').scrollIntoView({behavior:'smooth'})">Оставить заявку</button>
+      <button class="btn-outline" onclick="document.getElementById('tseny').scrollIntoView({behavior:'smooth'})">Цены на металл</button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-val">10+</div><div class="stat-label">лет на рынке</div></div>
+      <div class="stat"><div class="stat-val">День в день</div><div class="stat-label">расчёт</div></div>
+      <div class="stat"><div class="stat-val">Бесплатно</div><div class="stat-label">вывоз от 500 кг</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+<div class="section" id="tseny">
+  <div class="section-head"><div class="section-dot"></div><span class="section-title">Цены на металлолом</span></div>
+  <div class="price-cat">Чёрный металл</div>
+  <div class="price-row"><div><div class="price-name">Листовой металл</div></div><div class="price-val">12–15 руб/кг</div></div>
+  <div class="price-row"><div><div class="price-name">Трубный металл</div></div><div class="price-val">13–16 руб/кг</div></div>
+  <div class="price-row"><div><div class="price-name">Арматура</div></div><div class="price-val">14–17 руб/кг</div></div>
+  <div class="price-cat">Цветные металлы</div>
+  <div class="price-row"><div><div class="price-name">Медь</div><div class="price-sub">проводка, трубы</div></div><div class="price-val">500–600 руб/кг</div></div>
+  <div class="price-row"><div><div class="price-name">Алюминий</div></div><div class="price-val">90–120 руб/кг</div></div>
+  <div class="price-row"><div><div class="price-name">Латунь</div></div><div class="price-val">200–250 руб/кг</div></div>
+  <div class="price-row"><div><div class="price-name">Бронза</div></div><div class="price-val">300–350 руб/кг</div></div>
+  <div class="price-cat">Прочее</div>
+  <div class="price-row"><div><div class="price-name">Нержавейка</div><div class="price-sub">пластина, труба</div></div><div class="price-val">30–40 руб/кг</div></div>
+  <div class="price-row"><div><div class="price-name">Аккумуляторы</div><div class="price-sub">свинцовые</div></div><div class="price-val">25–30 руб/кг</div></div>
+</div>
+
+<div class="section">
+  <div class="section-head"><div class="section-dot"></div><span class="section-title">Как это работает</span></div>
+  <div class="steps">
+    <div class="step"><div class="step-num">1</div><div class="step-title">Оставь заявку</div><div class="step-desc">Онлайн или по телефону</div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-title">Мы приедем</div><div class="step-desc">Или приезжай сам — адрес на карте</div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-title">Взвешивание</div><div class="step-desc">Честные весы — всё видишь сам</div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-title">Расчёт</div><div class="step-desc">Деньги сразу, день в день</div></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-head"><div class="section-dot"></div><span class="section-title">Почему Эдельвейс</span></div>
+  <div class="why-grid">
+    <div class="why-card"><div class="why-icon">⚖️</div><div class="why-title">Честные весы</div><div class="why-desc">Взвешиваем при вас, без скрытых вычетов</div></div>
+    <div class="why-card"><div class="why-icon">💰</div><div class="why-title">Цены выше рынка</div><div class="why-desc">Обновляем прайс каждую неделю</div></div>
+    <div class="why-card"><div class="why-icon">🚛</div><div class="why-title">Бесплатный вывоз</div><div class="why-desc">Приедем и заберём сами от 500 кг</div></div>
+    <div class="why-card"><div class="why-icon">📋</div><div class="why-title">Всё официально</div><div class="why-desc">Договор, документы, полная прозрачность</div></div>
+  </div>
+</div>
+
+<div class="section" id="reviews">
+  <div class="section-head"><div class="section-dot"></div><span class="section-title">Отзывы клиентов</span></div>
+  <div class="review-form">
+    <div class="review-form-title">Оставьте ваш отзыв 💬</div>
+    <div class="stars-row" id="stars">
+      <span class="star" data-i="1">★</span><span class="star" data-i="2">★</span><span class="star" data-i="3">★</span><span class="star" data-i="4">★</span><span class="star" data-i="5">★</span>
+    </div>
+    <div class="field"><label>Ваше имя</label><input type="text" id="rname" placeholder="Иван"></div>
+    <div class="field"><label>Ваш отзыв</label><textarea id="rtext" placeholder="Расскажите о вашем опыте..."></textarea></div>
+    <button class="btn-dark" onclick="submitReview()">Отправить отзыв</button>
+  </div>
+  <div class="reviews-list" id="reviews-list">
+    <div class="no-reviews" id="no-reviews">Будьте первым — оставьте отзыв! 🌟</div>
+  </div>
+</div>
+
+<div class="section" id="zayavka">
+  <div class="section-head"><div class="section-dot"></div><span class="section-title">Оставить заявку</span></div>
+  <div class="form-grid">
+    <div class="field"><label>Имя</label><input type="text" placeholder="Иван"></div>
+    <div class="field"><label>Телефон</label><input type="tel" placeholder="+7 (999) 123-45-67"></div>
+  </div>
+  <div class="form-grid">
+    <div class="field"><label>Тип металла</label><select><option>Чёрный металл</option><option>Медь</option><option>Алюминий</option><option>Нержавейка</option><option>Аккумуляторы</option><option>Другое</option></select></div>
+    <div class="field"><label>Примерный вес</label><input type="text" placeholder="100 кг"></div>
+  </div>
+  <div class="field"><label>Нужен вывоз?</label><select><option>Приеду сам</option><option>Нужен вывоз — пришлите машину</option></select></div>
+  <button class="btn-dark">Отправить заявку</button>
+</div>
+
+<div class="eco">
+  <div class="eco-title">Мы заботимся о <span>природе</span> 💚</div>
+  <p class="eco-text">Каждый килограмм сданного металла — это вклад в чистоту нашего города. Меньше свалок, меньше добычи руды. Мы из лома — и мы делаем мир чище.</p>
+</div>
+
+<div class="section">
+  <div class="section-head"><div class="section-dot"></div><span class="section-title">Контакты</span></div>
+  <div class="contacts-grid">
+    <div class="contact-item"><span class="contact-label">Телефон</span><span class="contact-val"><a href="tel:+79991234567">+7 (999) 123-45-67</a></span></div>
+    <div class="contact-item"><span class="contact-label">Адрес</span><span class="contact-val">ул. Промышленная, 5</span></div>
+    <div class="contact-item"><span class="contact-label">Режим работы</span><span class="contact-val">Пн–Пт: 8:00–18:00<br>Сб: 9:00–15:00<br>Вс: выходной</span></div>
+    <div class="contact-item"><span class="contact-label">Сайт</span><span class="contact-val"><a href="#">ЭдельвейсЛом.рф</a></span></div>
+  </div>
+</div>
+
+<div class="footer">© Эдельвейс — Мы из лома. Все права защищены.</div>
+</div>
+
+<script>
+const canvas=document.getElementById('bg'),ctx=canvas.getContext('2d'),hero=document.getElementById('hero');
+function resize(){canvas.width=hero.offsetWidth;canvas.height=hero.offsetHeight;}
+resize();window.addEventListener('resize',resize);
+const P=[];for(let i=0;i<90;i++)P.push({x:Math.random(),y:Math.random(),r:Math.random()*2.2+0.3,speed:Math.random()*0.0003+0.0001,op:Math.random()*0.6+0.1,col:Math.random()>.6?'#c9a84c':Math.random()>.5?'#7ecb8f':'#fff',drift:(Math.random()-.5)*.0002});
+const S=[];for(let i=0;i<18;i++)S.push({x:Math.random(),y:Math.random(),len:Math.random()*18+6,ang:Math.random()*Math.PI*2,speed:Math.random()*.001+.0004,op:Math.random()*.5+.1,life:Math.random()});
+let t=0;
+function draw(){
+  const w=canvas.width,h=canvas.height;ctx.clearRect(0,0,w,h);
+  const g=ctx.createLinearGradient(0,0,w,h);g.addColorStop(0,'#0a1f0a');g.addColorStop(.4,'#0d2810');g.addColorStop(.7,'#111');g.addColorStop(1,'#0a1a08');
+  ctx.fillStyle=g;ctx.fillRect(0,0,w,h);
+  const gl=ctx.createRadialGradient(w*.5,h,0,w*.5,h,h*.7);gl.addColorStop(0,'rgba(40,120,50,0.18)');gl.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=gl;ctx.fillRect(0,0,w,h);t+=.008;
+  P.forEach(p=>{p.y-=p.speed;p.x+=p.drift+Math.sin(t+p.x*10)*.0001;if(p.y<0){p.y=1;p.x=Math.random();}ctx.beginPath();ctx.arc(p.x*w,p.y*h,p.r,0,Math.PI*2);ctx.fillStyle=p.col;ctx.globalAlpha=p.op*(.7+.3*Math.sin(t*2+p.x*5));ctx.fill();});
+  S.forEach(s=>{s.life+=s.speed;if(s.life>1){s.life=0;s.x=Math.random();s.y=Math.random();s.ang=Math.random()*Math.PI*2;}const f=Math.sin(s.life*Math.PI);ctx.beginPath();ctx.moveTo(s.x*w,s.y*h);ctx.lineTo(s.x*w+Math.cos(s.ang)*s.len,s.y*h+Math.sin(s.ang)*s.len);ctx.strokeStyle='#c9a84c';ctx.globalAlpha=s.op*f;ctx.lineWidth=.8;ctx.stroke();});
+  ctx.globalAlpha=1;requestAnimationFrame(draw);
+}
+draw();
+let sel=0;
+document.querySelectorAll('.star').forEach(s=>{
+  s.addEventListener('click',()=>{sel=+s.dataset.i;document.querySelectorAll('.star').forEach((st,i)=>st.classList.toggle('active',i<sel));});
+  s.addEventListener('mouseover',()=>{const i=+s.dataset.i;document.querySelectorAll('.star').forEach((st,j)=>st.classList.toggle('active',j<i));});
+  s.addEventListener('mouseout',()=>{document.querySelectorAll('.star').forEach((st,j)=>st.classList.toggle('active',j<sel));});
+});
+const reviews=[];
+function submitReview(){
+  const name=document.getElementById('rname').value.trim(),text=document.getElementById('rtext').value.trim();
+  if(!name||!text||!sel){alert('Заполните имя, отзыв и поставьте оценку!');return;}
+  const date=new Date().toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:'numeric'});
+  reviews.unshift({name,text,stars:sel,date});
+  document.getElementById('rname').value='';document.getElementById('rtext').value='';sel=0;document.querySelectorAll('.star').forEach(s=>s.classList.remove('active'));
+  document.getElementById('no-reviews').style.display='none';
+  document.getElementById('reviews-list').innerHTML=reviews.map(r=>`<div class="review-card"><div class="review-header"><span class="review-name-text">${r.name}</span><span class="review-stars">${'★'.repeat(r.stars)}${'☆'.repeat(5-r.stars)}</span></div><div class="review-date">${r.date}</div><div class="review-body">${r.text}</div></div>`).join('');
+}
+</script>
+</body>
+</html>
